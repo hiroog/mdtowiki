@@ -258,7 +258,7 @@ impl GenerateorContext {
 				table_block: false,
 				table_column: Vec::new(),
 				table_pat: regex::Regex::new( r"^\|(.*)\|\s*$" ).unwrap(),
-				table_alpat: regex::Regex::new( r"\s*([:-]+)\s*$" ).unwrap(),
+				table_alpat: regex::Regex::new( r"^\s*([-:]+)\s*$" ).unwrap(),
 			}
 	}
 	//-------------------------------------------------------------------------
@@ -608,6 +608,15 @@ impl Decoder {
 				Err(e) => {
 					return	Err(e);
 				},
+			}
+		}
+		if context.is_pre_block() {
+			if let Some(e)= context.add_pre_block( "" ) {
+				page.push( e );
+			}
+		}else if context.is_table_block() {
+			if let Some(e)= context.add_table_block( "" ) {
+				page.push( e );
 			}
 		}
 		Ok(page)

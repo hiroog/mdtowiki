@@ -7,3 +7,4 @@ pub mod w_md;
 pub mod w_doku;
 pub mod w_puki;
 pub mod w_red;
+pub mod w_conf;

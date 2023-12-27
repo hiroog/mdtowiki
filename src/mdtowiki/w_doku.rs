@@ -98,8 +98,40 @@ pub	fn	encode_to_doku( line: &str ) -> String
 {
 	let	mut	buffer= String::new();
 	let	mut	char_it= line.chars();
+	let mut slash_count= 0;
+	let mut back_slash= false;
+	let mut colon= false;
 	loop {
 		let	ch= char_it.next();
+		if Some('/') == ch {
+			if !colon {
+				slash_count+= 1;
+				continue;
+			}
+		}else{
+			let fence= slash_count >= 2;
+			if fence {
+				buffer+= "<nowiki>";
+			}
+			for _ in 0..slash_count {
+				buffer+= "/";
+			}
+			if fence {
+				buffer+= "</nowiki>";
+			}
+			slash_count= 0;
+		}
+		if Some(':') == ch {
+			colon= true;
+		}else{
+			colon= false;
+		}
+		if back_slash {
+			if Some('_') != ch {
+				buffer+= "\\";
+			}
+			back_slash= false;
+		}
 		match ch {
 			Some('\x07') => {
 				let	cmd0= char_it.next().unwrap();
@@ -140,6 +172,9 @@ pub	fn	encode_to_doku( line: &str ) -> String
 					_ => {
 					},
 				}
+			},
+			Some('\\') => {
+				back_slash= true;
 			},
 			Some(c) => {
 				buffer+= &format!( "{}", c );
@@ -522,7 +557,8 @@ impl	EncodeElement for HTagElement {
 	{
 		let	count= 7 - self.level;
 		let	tag= '='.to_string().repeat( count as usize );
-		return	format!( "{} {} {}\n", tag, self.title, tag );
+		return	format!( "{} {} {}\n", tag, encode_to_doku( &self.title ), tag );
+		//return	format!( "{} {} {}\n", tag, self.title, tag );
 	}
 }
 
@@ -535,9 +571,9 @@ impl	EncodeElement for LITagElement {
 		let	indent= (self.nest+1) * 2;
 		let	spaces= ' '.to_string().repeat( indent as usize );
 		if self.etype == ElementType::ULTAG {
-			return	format!( "{}* {}\n", spaces, self.text );
+			return	format!( "{}* {}\n", spaces, encode_to_doku( &self.text ) );
 		}else{
-			return	format!( "{}- {}\n", spaces, self.text );
+			return	format!( "{}- {}\n", spaces, encode_to_doku( &self.text ) );
 		}
 	}
 }
@@ -551,7 +587,11 @@ impl	EncodeElement for PRETagElement {
 		if self.code.is_empty() {
 			return	format!( "<code>\n{}</code>\n", self.text );
 		}
-		return	format!( "<code {}>\n{}</code>\n", self.code, self.text );
+		if self.code == "json" || self.code == "jsx" {
+			return	format!( "<code javascript>\n{}</code>\n", self.text );
+		}else{
+			return	format!( "<code {}>\n{}</code>\n", self.code, self.text );
+		}
 	}
 }
 
@@ -592,9 +632,9 @@ impl	EncodeElement for TABLEElement {
 					},
 				}
 				if attr.header {
-					buffer+= &format!( "{}{}{}^", ls, attr.text, rs );
+					buffer+= &format!( "{}{}{}^", ls, encode_to_doku( &attr.text ), rs );
 				}else{
-					buffer+= &format!( "{}{}{}|", ls, attr.text, rs );
+					buffer+= &format!( "{}{}{}|", ls, encode_to_doku( &attr.text ), rs );
 				}
 			}
 			buffer+= "\n";

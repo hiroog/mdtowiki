@@ -6,11 +6,11 @@ mod mdtowiki;
 
 fn	usage()
 {
-	println!( "mdtowiki v1.00 2022 Hiroyuki Ogasawara" );
+	println!( "mdtowiki v1.10 2022 Hiroyuki Ogasawara" );
 	println!( "usage: mdtowiki [<options>] <input_file>" );
 	println!( "option:" );
 	println!( "  -l<type>     md,doku,puki" );
-	println!( "  -s<type>     md,doku,puki,red" );
+	println!( "  -s<type>     md,doku,puki,red,conf" );
 	println!( "  -o<output_file>" );
 	println!( "  --all" );
 	println!( "  --dump" );
@@ -84,6 +84,7 @@ fn	main()
 				save_list.push( ("doku".to_string(), "output.doku".to_string()) );
 				save_list.push( ("puki".to_string(), "output.puki".to_string()) );
 				save_list.push( ("red".to_string(), "output.red".to_string()) );
+				save_list.push( ("conf".to_string(), "output.conf".to_string()) );
 			}
 			for (save_type,output_file) in &save_list {
 				println!( "save [{}]:  {}", save_type, output_file );
@@ -99,6 +100,9 @@ fn	main()
 					},
 					"red" => {
 						doc.save( &output_file, &mdtowiki::w_red::Encoder::new() ).unwrap();
+					},
+					"conf" => {
+						doc.save( &output_file, &mdtowiki::w_conf::Encoder::new() ).unwrap();
 					},
 					_ => {
 						usage();
