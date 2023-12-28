@@ -10,7 +10,9 @@ Cargo.lock
 **/*.rs.bk
 
 doku_config.txt
+dokuwiki_map.txt
 /tools/*.png
 /tools/*.jpeg
 /tools/*.jpg
 /tools/*.svg
+/notion/

@@ -4,11 +4,17 @@
 import sys
 import os
 import zipfile
+import DokuWikiPostTool
+
+#  notion/...zip
+#  dokuwiki_map.txt
+#    post  document:tools:converter  8cf1.doku.txt
 
 
 class WikiConverter:
     def __init__( self, options ):
         self.options= options
+        self.load_dokuwiki_map()
 
     def find_mdfile( self, folder_root ):
         for file_name in os.listdir( folder_root ):
@@ -19,6 +25,30 @@ class WikiConverter:
                 return  md_path
         return  None
 
+    def load_dokuwiki_map( self ):
+        file_name= 'dokuwiki_map.txt'
+        post_list= []
+        if os.path.exists( file_name ):
+            with open( file_name, 'r', encoding='utf-8' ) as fi:
+                for line in fi:
+                    line= line.strip()
+                    if line == '' or line.startswith( '#' ):
+                        continue
+                    params= line.split()
+                    if params[0] == 'post':
+                        print( 'LOAD PostMap', params )
+                        post_list.append( { 'page':params[1], 'file':params[2] } )
+        self.post_list= post_list
+
+    def auto_post( self, file_doku ):
+        for post in self.post_list:
+            if file_doku.endswith( post['file'] ):
+                print( 'MATCH', post )
+                DokuWikiPostTool.main( [ '',
+                            '--upload', '--page', post['page'], '--file', file_doku
+                        ] )
+                break;
+
     def convert_file( self, file_name, output_file ):
         print( 'load:', file_name )
         input_file= file_name
@@ -27,6 +57,7 @@ class WikiConverter:
         command= 'cargo run -- -lmd "%s" -sdoku "-o%s" -sconf "-o%s"' % (input_file, output_file_doku, output_file_conf)
         print( 'save:', output_file )
         os.system( command )
+        self.auto_post( output_file_doku )
 
     def decode_notion( self, folder_root ):
         for file_name in os.listdir( folder_root ):
