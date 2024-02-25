@@ -54,25 +54,31 @@ class WikiConverter:
         input_file= file_name
         output_file_doku= output_file + '.doku.txt'
         output_file_conf= output_file + '.conf.txt'
-        command= 'cargo run -- -lmd "%s" -sdoku "-o%s" -sconf "-o%s"' % (input_file, output_file_doku, output_file_conf)
+        binary_path= 'mdtowiki.exe'
+        if os.path.exists( binary_path ):
+            command_exe= binary_path
+        else:
+            command_exe= 'cargo run --'
+        command= '%s -lmd "%s" -sdoku "-o%s" -sconf "-o%s"' % (command_exe, input_file, output_file_doku, output_file_conf)
         print( 'save:', output_file )
         os.system( command )
         self.auto_post( output_file_doku )
 
     def decode_notion( self, folder_root ):
-        for file_name in os.listdir( folder_root ):
-            base_name,ext= os.path.splitext( file_name )
-            if ext == '.zip':
-                zip_dir_path= os.path.join( folder_root, base_name )
-                if not os.path.exists( zip_dir_path ):
-                    with zipfile.ZipFile( zip_dir_path + '.zip' ) as zi:
-                        zi.extractall( zip_dir_path )
-                        print( 'extract: ', zip_dir_path+'.zip' )
-                md_path= self.find_mdfile( zip_dir_path )
-                if md_path:
-                    base,name= os.path.split( md_path )
-                    output_name= os.path.join( folder_root, name.replace( '.md', '' ) )
-                    self.convert_file( md_path, output_name )
+        if os.path.exists( folder_root ):
+            for file_name in os.listdir( folder_root ):
+                base_name,ext= os.path.splitext( file_name )
+                if ext == '.zip':
+                    zip_dir_path= os.path.join( folder_root, base_name )
+                    if not os.path.exists( zip_dir_path ):
+                        with zipfile.ZipFile( zip_dir_path + '.zip' ) as zi:
+                            zi.extractall( zip_dir_path )
+                            print( 'extract: ', zip_dir_path+'.zip' )
+                    md_path= self.find_mdfile( zip_dir_path )
+                    if md_path:
+                        base,name= os.path.split( md_path )
+                        output_name= os.path.join( folder_root, name.replace( '.md', '' ) )
+                        self.convert_file( md_path, output_name )
 
     def f_convert_zip( self ):
         self.decode_notion( 'notion' )

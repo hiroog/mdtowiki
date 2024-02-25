@@ -16,3 +16,5 @@ dokuwiki_map.txt
 /tools/*.jpg
 /tools/*.svg
 /notion/
+*.exe
+/zip/
