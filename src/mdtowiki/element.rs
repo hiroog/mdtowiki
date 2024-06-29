@@ -24,6 +24,7 @@ pub trait CastToAny : Any {
 	fn	as_any( &self ) -> &dyn Any;
 }
 
+#[allow(dead_code)]
 pub trait Element : CastToAny {
 	fn	get_type( &self ) -> ElementType;
 	fn	dump( &self );

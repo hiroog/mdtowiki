@@ -11,6 +11,7 @@ pub struct Document {
 	pub element_list	: Vec<Box<dyn Element>>,
 }
 
+#[allow(dead_code)]
 pub trait TextEncoder {
 	fn	encode_single( &self, element: &Box<dyn Element> ) -> String;
 	fn	encode( &self, document: &Document ) -> String

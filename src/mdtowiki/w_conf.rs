@@ -45,6 +45,9 @@ pub	fn	encode_to_conf( line: &str ) -> String
 					'D'|'d' => {
 						buffer+= "~";
 					},
+					'C'|'c' => {
+						buffer+= " ";
+					},
 					'L' => {
 						match cmd1 {
 							'0' => {

@@ -38,6 +38,7 @@ pub fn	replace_md_tags( line: &str ) -> String
 				EMMarkPat{ pat: Regex::new( r"(^.*[^\\]|^)\*\*([^*]+)\*\*(.*)$" ).unwrap(),		cmd1: "\x07B2", cmd2: "\x07b2", },
 				EMMarkPat{ pat: Regex::new( r"(^.*[^\\]|^)\*([^*]+)\*(.*)$" ).unwrap(),			cmd1: "\x07B1", cmd2: "\x07b1", },
 				EMMarkPat{ pat: Regex::new( r"^(.*)~~([^~]+)~~(.*)$" ).unwrap(),				cmd1: "\x07D0", cmd2: "\x07d0", },
+				EMMarkPat{ pat: Regex::new( r"^(.*)`([^`]+)`(.*)$" ).unwrap(),					cmd1: "\x07C0", cmd2: "\x07c0", },
 			];
 		static ref	PAT_LINK: Regex= Regex::new( r"^(.*)\[(.+)\]\((.+)\)(.*)$" ).unwrap();
 	}
@@ -171,6 +172,9 @@ pub fn	encode_to_md( line: &str ) -> String
 					},
 					'D'|'d' => {
 						buffer+= "~~";
+					},
+					'C'|'c' => {
+						buffer+= "`";
 					},
 					'L' => {
 						match cmd1 {

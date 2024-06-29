@@ -6,7 +6,7 @@ mod mdtowiki;
 
 fn	usage()
 {
-	println!( "mdtowiki v1.10 2022 Hiroyuki Ogasawara" );
+	println!( "mdtowiki v1.11 2022 Hiroyuki Ogasawara" );
 	println!( "usage: mdtowiki [<options>] <input_file>" );
 	println!( "option:" );
 	println!( "  -l<type>     md,doku,puki" );
