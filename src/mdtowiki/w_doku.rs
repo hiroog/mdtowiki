@@ -234,7 +234,7 @@ impl GenerateorContext {
 	}
 	fn	add_pre_block( &mut self, line: &str ) -> Option<Box<dyn Element>>
 	{
-		if line.starts_with( "</code>" ) {
+		if line.starts_with( "</code>" ) || line.starts_with( "</file>" ) {
 			self.pre_block= false;
 			return	Some( Box::new( PRETagElement{
 							etype:	ElementType::PRETAG,
@@ -384,8 +384,8 @@ impl PRETagGen {
 	fn	new() -> Self
 	{
 		PRETagGen{
-			pat_format: regex::Regex::new( r"^<code\s+(\w+)>$" ).unwrap(),
-			pat: regex::Regex::new( r"^<code>$" ).unwrap(),
+			pat_format: regex::Regex::new( r"^<(code|file)\s+(\w+).*>$" ).unwrap(),
+			pat: regex::Regex::new( r"^<code.*>$" ).unwrap(),
 		}
 	}
 }
@@ -396,7 +396,7 @@ impl ElementGenerator for PRETagGen {
 		let	pat_result= self.pat_format.captures( line );
 		if let Some(v)= pat_result {
 			context.pre_block= true;
-			context.pre_code= v[1].to_string();
+			context.pre_code= v[2].to_string();
 			context.pre_data= String::new();
 			return	Some( Box::new( NONEElement{} ));
 		}
