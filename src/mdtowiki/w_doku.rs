@@ -36,7 +36,7 @@ pub fn	replace_doku_tags( line: &str ) -> String
 				EMMarkPat{ pat: Regex::new( r"^(.*)\*\*([^*]+)\*\*(.*)$" ).unwrap(),		cmd1: "\x07B2", cmd2: "\x07b2", },
 				EMMarkPat{ pat: Regex::new( r"^(.*)//([^/]+)//(.*)$" ).unwrap(),			cmd1: "\x07B1", cmd2: "\x07b1", },
 				EMMarkPat{ pat: Regex::new( r"^(.*)<del>([^/]+)</del>(.*)$" ).unwrap(),		cmd1: "\x07D0", cmd2: "\x07d0", },
-				EMMarkPat{ pat: Regex::new( r"^(.*)<code>([^/]+)</code>(.*)$" ).unwrap(),	cmd1: "\x07C0", cmd2: "\x07c0", },
+				EMMarkPat{ pat: Regex::new( r"^(.*)''([^/]+)''(.*)$" ).unwrap(),			cmd1: "\x07C0", cmd2: "\x07c0", },
 			];
 		static ref	PAT_LINK2: Regex= Regex::new( r"^(.*)\[\[([^|]+)\|(.*)\]\](.*)$" ).unwrap();
 		static ref	PAT_LINK1: Regex= Regex::new( r"^(.*)\[\[(.+)\]\](.*)$" ).unwrap();
@@ -158,10 +158,10 @@ pub	fn	encode_to_doku( line: &str ) -> String
 						buffer+= "</del>";
 					},
 					'C' => {
-						buffer+= "<code>";
+						buffer+= "''";
 					},
 					'c' => {
-						buffer+= "</code>";
+						buffer+= "''";
 					},
 					'L' => {
 						match cmd1 {

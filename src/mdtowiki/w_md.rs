@@ -147,9 +147,9 @@ pub fn	encode_to_md( line: &str ) -> String
 				//buffer+= "&gt;";
 				buffer+= "\\>";
 			},
-			Some('_') => {
+			/*Some('_') => {
 				buffer+= "\\_";
-			},
+			},*/
 			Some('*') => {
 				buffer+= "\\*";
 			},
